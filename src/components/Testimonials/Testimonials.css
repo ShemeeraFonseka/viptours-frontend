@@ -1,0 +1,126 @@
+.testimonial-section {
+  background: #000000;
+  color: #fff;
+  text-align: center;
+  padding: 4rem 6rem;
+}
+
+.testimonial-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Grid Layout */
+.testimonial-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Testimonial Card */
+.testimonial-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid #cf1212;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 0 20px rgba(255, 60, 0, 0.5);
+}
+
+/* Quote Icon */
+.quote-icon {
+  font-size: 2rem;
+  color: #cf1212;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  opacity: 0.7;
+}
+
+/* Testimonial Text */
+.testimonial-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #e6e6e6;
+  font-style: italic;
+}
+
+/* User Info */
+.testimonial-user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.testimonial-user h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.testimonial-user p {
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+/* -------------------- RESPONSIVE -------------------- */
+
+/* Tablets */
+@media (max-width: 992px) {
+  .testimonial-section {
+    padding: 3rem 2rem;
+  }
+
+  .testimonial-section h2 {
+    font-size: 2.2rem;
+  }
+
+  .testimonial-card {
+    padding: 1.8rem;
+  }
+
+  .testimonial-text {
+    font-size: 1rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .testimonial-section {
+    padding: 2.5rem 1rem;
+  }
+
+  .testimonial-section h2 {
+    font-size: 1.8rem;
+  }
+
+  .testimonial-card {
+    padding: 1.5rem;
+  }
+
+  .testimonial-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .quote-icon {
+    font-size: 1.6rem;
+    top: 0.8rem;
+    left: 0.8rem;
+  }
+}

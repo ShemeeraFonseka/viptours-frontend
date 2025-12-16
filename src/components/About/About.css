@@ -1,0 +1,125 @@
+.about-section {
+  background: #000000;
+  color: #fff;
+  padding: 8rem 5rem;
+  height: auto;
+}
+
+/* Container Grid */
+.about-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  margin: 0 auto;
+}
+
+/* Text Section */
+.about-text h2 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+}
+
+.about-text p {
+  font-size: 1.2rem;
+  line-height: 1.75;
+  color: #e0e0e0;
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+/* Gallery Section */
+.gallery-item {
+  overflow: hidden;
+  border-radius: 12px;
+  position: relative;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.1);
+}
+
+/* --------------------------
+      RESPONSIVE DESIGN
+--------------------------- */
+
+/* Tablets & Small Laptops */
+@media (max-width: 1024px) {
+  .about-section {
+    padding:10rem 3rem;
+  }
+
+  .about-text h2 {
+    font-size: 2.3rem;
+  }
+
+  .about-text p {
+    font-size: 1.1rem;
+  }
+}
+
+/* Tablets (900px and below) */
+@media (max-width: 900px) {
+  .about-container {
+    grid-template-columns: 1fr;
+  }
+
+  .about-gallery {
+    width: 100%;
+  }
+
+  .about-text {
+    text-align: center;
+  }
+
+  .about-text p {
+    text-align: left;
+  }
+}
+
+/* Mobile Devices */
+@media (max-width: 768px) {
+  .about-section {
+    padding: 10rem 2rem;
+  }
+
+  .about-text h2 {
+    font-size: 2rem;
+  }
+
+  .about-text p {
+    font-size: 1rem;
+  }
+
+  .gallery-item img {
+    height: 260px;
+  }
+}
+
+/* Small Mobile Phones */
+@media (max-width: 480px) {
+  .about-section {
+    padding: 10rem 1.2rem;
+  }
+
+  .about-text h2 {
+    font-size: 1.8rem;
+  }
+
+  .about-text p {
+    font-size: 0.95rem;
+  }
+
+  .gallery-item img {
+    height: 220px;
+  }
+}

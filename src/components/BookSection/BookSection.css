@@ -1,0 +1,78 @@
+.book-section {
+  position: relative;
+  height: 80vh;
+  background-image: url('./image.jpg'); /* 🖼️ your image here */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* dark overlay for contrast */
+.book-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* text and button content */
+.book-content {
+  max-width: 700px;
+  color: white;
+  z-index: 1;
+}
+
+.book-content h2 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.book-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+/* button styling */
+.book-btn {
+  background: linear-gradient(90deg, #c31432, #ff4b2b);
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(255, 75, 43, 0.4);
+}
+
+.book-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(255, 75, 43, 0.7);
+}
+
+/* responsive design */
+@media (max-width: 768px) {
+  .book-content h2 {
+    font-size: 2rem;
+  }
+
+  .book-content p {
+    font-size: 1rem;
+  }
+
+  .book-btn {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+  }
+}

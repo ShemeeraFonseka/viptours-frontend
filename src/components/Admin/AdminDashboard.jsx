@@ -1315,6 +1315,7 @@ const AdminDashboard = () => {
                             {/* Booking Statistics */}
                             <div className="users-content">
                                 <div className="users-stats">
+                                    
                                     <div className="row">
                                         <div className="col-md-3">
                                             <div className="dashboard-card" style={{
@@ -1627,9 +1628,7 @@ const AdminDashboard = () => {
                                             <table>
                                                 <thead>
                                                     <tr>
-                                                        <th>ID</th>
                                                         <th>Customer</th>
-                                                        <th>Contact</th>
                                                         <th>Destination</th>
                                                         <th>Check-in</th>
                                                         <th>Check-out</th>
@@ -1642,23 +1641,9 @@ const AdminDashboard = () => {
                                                 <tbody>
                                                     {filteredBookings.map(booking => (
                                                         <tr key={booking._id}>
-                                                            <td>
-                                                                <code style={{
-                                                                    background: '#f1f5f9',
-                                                                    padding: '4px 8px',
-                                                                    borderRadius: '4px',
-                                                                    fontSize: '0.85rem'
-                                                                }}>
-                                                                    #{booking._id.slice(-6)}
-                                                                </code>
-                                                            </td>
+                                                            
                                                             <td style={{ fontWeight: '600' }}>{booking.name}</td>
-                                                            <td>
-                                                                <div style={{ fontSize: '0.9rem' }}>
-                                                                    <div>{booking.email}</div>
-                                                                    <div style={{ color: '#64748b' }}>{booking.phone}</div>
-                                                                </div>
-                                                            </td>
+                                                            
                                                             <td>{booking.destination}</td>
                                                             <td>{formatDateTime(booking.checkin)}</td>
                                                             <td>{formatDateTime(booking.checkout)}</td>
@@ -2270,54 +2255,7 @@ const AdminDashboard = () => {
                                     </form>
                                 </div>
 
-                                <div className="packages-table">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Topic</th>
-                                                <th>Line</th>
-                                                <th>Welcome Topic</th>
-                                                <th>Paragraph 1</th>
-                                                <th>Paragraph 2</th>
-                                                <th>Service Topic 1</th>
-                                                <th>Service Description 1</th>
-                                                <th>Service Topic 2</th>
-                                                <th>Service Description 2</th>
-                                                <th>Service Topic 3</th>
-                                                <th>Service Description 3</th>
-                                                <th>Service Topic 4</th>
-                                                <th>Service Description 4</th>
-
-
-
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {homeInfo.map(home => (
-                                                <tr key={home._id}>
-                                                    <td>{home.topic}</td>
-                                                    <td>{home.line}</td>
-                                                    <td>{home.welcometopic}</td>
-                                                    <td>{home.welcomepara1}</td>
-                                                    <td>{home.welcomepara2}</td>
-                                                    <td>{home.servicetopic1}</td>
-                                                    <td>{home.servicepara1}</td>
-                                                    <td>{home.servicetopic2}</td>
-                                                    <td>{home.servicepara2}</td>
-                                                    <td>{home.servicetopic3}</td>
-                                                    <td>{home.servicepara3}</td>
-                                                    <td>{home.servicetopic4}</td>
-                                                    <td>{home.servicepara4}</td>
-
-                                                    <td>
-                                                        <button className='btn-action edit' onClick={() => handleHomeEdit(home)}>Edit</button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                              
                             </div>
                         </div>
 

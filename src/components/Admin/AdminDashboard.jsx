@@ -103,11 +103,15 @@ const AdminDashboard = () => {
     const fetchHomeInfo = async () => {
         try {
             const res = await axios.get(`${process.env.REACT_APP_API_URL}/vipapi/home`);
-            setHomeInfo([res.data]); // Wrap in array for table display
+
+            // Ensure homeInfo is always an array of objects
+            const data = Array.isArray(res.data) ? res.data : [res.data];
+            setHomeInfo(data);
         } catch (err) {
             console.error('Error fetching home info:', err);
         }
     };
+
 
     const handleHomeInputChange = (e) => {
         setHomeFormData({ ...homeFormData, [e.target.name]: e.target.value });
@@ -162,23 +166,32 @@ const AdminDashboard = () => {
     };
 
     const handleHomeEdit = (home) => {
+        if (!home || !home._id) {
+            console.error('Invalid home data:', home);
+            return;
+        }
+
         setHomeEditingId(home._id);
         setHomeFormData({
-            topic: home.topic,
-            line: home.line,
-            welcometopic: home.welcometopic,
-            welcomepara1: home.welcomepara1,
-            welcomepara2: home.welcomepara2,
-            servicetopic1: home.servicetopic1,
-            servicepara1: home.servicepara1,
-            servicetopic2: home.servicetopic2,
-            servicepara2: home.servicepara2,
-            servicetopic3: home.servicetopic3,
-            servicepara3: home.servicepara3,
-            servicetopic4: home.servicetopic4,
-            servicepara4: home.servicepara4,
+            topic: home.topic || '',
+            line: home.line || '',
+            welcometopic: home.welcometopic || '',
+            welcomepara1: home.welcomepara1 || '',
+            welcomepara2: home.welcomepara2 || '',
+            servicetopic1: home.servicetopic1 || '',
+            servicepara1: home.servicepara1 || '',
+            servicetopic2: home.servicetopic2 || '',
+            servicepara2: home.servicepara2 || '',
+            servicetopic3: home.servicetopic3 || '',
+            servicepara3: home.servicepara3 || '',
+            servicetopic4: home.servicetopic4 || '',
+            servicepara4: home.servicepara4 || '',
         });
     };
+
+    useEffect(() => {
+        fetchHomeInfo();
+    }, []);
 
     const toggleSidebar = () => {
         setSidebarActive(!sidebarActive);
@@ -797,7 +810,7 @@ const AdminDashboard = () => {
             }
 
             // Reset all forms
-            setVipPackageFormData({ packageId: '', title: '', description: '' , price: '', isActive: true, displayOrder: 0 });
+            setVipPackageFormData({ packageId: '', title: '', description: '', price: '', isActive: true, displayOrder: 0 });
             setVipPackageDetailedData({ detailedTitle: '', detailedIntro: '', proTip: '' });
             setVipPackageSections([{ sectionTitle: '', sectionContent: '', sectionImage: null }]);
             setSectionPreviews([]);
@@ -1315,7 +1328,7 @@ const AdminDashboard = () => {
                             {/* Booking Statistics */}
                             <div className="users-content">
                                 <div className="users-stats">
-                                    
+
                                     <div className="row">
                                         <div className="col-md-3">
                                             <div className="dashboard-card" style={{
@@ -1641,9 +1654,9 @@ const AdminDashboard = () => {
                                                 <tbody>
                                                     {filteredBookings.map(booking => (
                                                         <tr key={booking._id}>
-                                                            
+
                                                             <td style={{ fontWeight: '600' }}>{booking.name}</td>
-                                                            
+
                                                             <td>{booking.destination}</td>
                                                             <td>{formatDateTime(booking.checkin)}</td>
                                                             <td>{formatDateTime(booking.checkout)}</td>
@@ -2053,7 +2066,7 @@ const AdminDashboard = () => {
                                             <tbody>
                                                 {vipPackages.map((pkg) => (
                                                     <tr key={pkg._id}>
-                                                        
+
                                                         <td>
                                                             <img
                                                                 src={`${process.env.REACT_APP_API_URL}/${pkg.image}`}
@@ -2148,7 +2161,25 @@ const AdminDashboard = () => {
                                 <h4>Home Page Content</h4>
                                 <br /><br />
                                 <div className="package-form" style={{ marginBottom: '20px' }}>
-                                    <h5>{contactEditingId ? 'Edit Contact Information' : 'Add New Contact Information'}</h5>
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center'
+                                    }}>
+                                        <h5>
+                                            {homeEditingId ? 'Edit Home Information' : 'Add Home Information'}
+                                        </h5>
+
+                                        {homeInfo.length > 0 && !homeEditingId && (
+                                            <button
+                                                
+                                                className='btn-action edit'
+                                                onClick={() => handleHomeEdit(homeInfo[0])}
+                                            >
+                                                Edit Home Content
+                                            </button>
+                                        )}
+                                    </div>
                                     <form onSubmit={handleHomeSubmit}>
 
                                         <input
@@ -2255,7 +2286,7 @@ const AdminDashboard = () => {
                                     </form>
                                 </div>
 
-                              
+                                
                             </div>
                         </div>
 

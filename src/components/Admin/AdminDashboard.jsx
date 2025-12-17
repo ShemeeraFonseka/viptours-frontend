@@ -2170,15 +2170,7 @@ const AdminDashboard = () => {
                                             {homeEditingId ? 'Edit Home Information' : 'Add Home Information'}
                                         </h5>
 
-                                        {homeInfo.length > 0 && !homeEditingId && (
-                                            <button
-                                                
-                                                className='btn-action edit'
-                                                onClick={() => handleHomeEdit(homeInfo[0])}
-                                            >
-                                                Edit Home Content
-                                            </button>
-                                        )}
+                                        
                                     </div>
                                     <form onSubmit={handleHomeSubmit}>
 
@@ -2282,6 +2274,16 @@ const AdminDashboard = () => {
                                                 setHomeEditingId(null);
                                                 setHomeFormData({ topic: '', line: '', welcometopic: '', welcomepara1: '', welcomepara2: '', servicetopic1: '', servicepara1: '', servicetopic2: '', servicepara2: '', servicetopic3: '', servicepara3: '', servicetopic4: '', servicepara4: '' });
                                             }}>Cancel</button>
+                                        )}
+
+                                        {homeInfo.length > 0 && !homeEditingId && (
+                                            <button
+                                                
+                                                className='btn-action edit'
+                                                onClick={() => handleHomeEdit(homeInfo[0])}
+                                            >
+                                                Edit Home Content
+                                            </button>
                                         )}
                                     </form>
                                 </div>

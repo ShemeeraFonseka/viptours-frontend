@@ -48,7 +48,7 @@ const Packages = () => {
           packagesData.map((p) => (
             <div className="package-card" key={p._id}>
               <img 
-                src={`${API_URL}/${p.image}`} 
+                src={`${API_URL}${p.image}`} 
                 alt={p.title} 
                 className="package-img"
                 onError={(e) => {

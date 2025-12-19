@@ -853,7 +853,7 @@ const AdminDashboard = () => {
             ));
         }
 
-        setVipPackagePreview(`${process.env.REACT_APP_API_URL}/${pkg.image}`);
+        setVipPackagePreview(`${process.env.REACT_APP_API_URL}${pkg.image}`);
         setVipPackageImage(null);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -1962,22 +1962,8 @@ const AdminDashboard = () => {
                                                     style={{ marginBottom: '15px', width: '100%' }}
                                                 />
 
-                                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#475569' }}>
-                                                    Section Image (optional):
-                                                </label>
-                                                <input
-                                                    type="file"
-                                                    accept="image/*"
-                                                    onChange={(e) => handleSectionImageChange(index, e.target.files[0])}
-                                                    style={{ marginBottom: '10px' }}
-                                                />
-                                                {sectionPreviews[index] && (
-                                                    <img
-                                                        src={sectionPreviews[index]}
-                                                        alt={`Section ${index + 1} Preview`}
-                                                        style={{ maxWidth: '250px', height: 'auto', borderRadius: '8px', border: '2px solid #e2e8f0' }}
-                                                    />
-                                                )}
+                                               
+                                                
                                             </div>
                                         ))}
                                     </div>
@@ -2018,7 +2004,7 @@ const AdminDashboard = () => {
                                                     setVipPackageEditingId(null);
                                                     setVipPackageFormData({ packageId: '', title: '', description: '', isActive: true, displayOrder: 0 });
                                                     setVipPackageDetailedData({ detailedTitle: '', detailedIntro: '', proTip: '' });
-                                                    setVipPackageSections([{ sectionTitle: '', sectionContent: '', sectionImage: null }]);
+                                                    setVipPackageSections([{ sectionTitle: '', sectionContent: ''}]);
                                                     setSectionPreviews([]);
                                                     setVipPackageImage(null);
                                                     setVipPackagePreview(null);
@@ -2069,7 +2055,7 @@ const AdminDashboard = () => {
 
                                                         <td>
                                                             <img
-                                                                src={`${process.env.REACT_APP_API_URL}/${pkg.image}`}
+                                                                src={`${process.env.REACT_APP_API_URL}${pkg.image}`}
                                                                 alt={pkg.title}
                                                                 style={{
                                                                     width: '100px',
@@ -3346,7 +3332,7 @@ const AdminDashboard = () => {
                                                         </td>
                                                         <td>
                                                             <img
-                                                                src={`${process.env.REACT_APP_API_URL}/${pkg.image}`}
+                                                                src={`${process.env.REACT_APP_API_URL}${pkg.image}`}
                                                                 alt={pkg.title}
                                                                 style={{
                                                                     width: '100px',
@@ -3448,7 +3434,7 @@ const AdminDashboard = () => {
                                                 transition: 'transform 0.3s ease'
                                             }}>
                                                 <img
-                                                    src={`${process.env.REACT_APP_API_URL}/${pkg.image}`}
+                                                    src={`${process.env.REACT_APP_API_URL}${pkg.image}`}
                                                     alt={pkg.title}
                                                     style={{
                                                         width: '100%',

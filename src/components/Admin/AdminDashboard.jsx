@@ -451,8 +451,8 @@ const AdminDashboard = () => {
 
         // Set image previews if they exist
         setAboutPreviews({
-            section1: about.section1?.image ? `${process.env.REACT_APP_API_URL}/${about.section1.image}` : null,
-            section2: about.section2?.image ? `${process.env.REACT_APP_API_URL}/${about.section2.image}` : null
+            section1: about.section1?.image ? `${process.env.REACT_APP_API_URL}/vipapi/images/${about.section1.image}` : null,
+            section2: about.section2?.image ? `${process.env.REACT_APP_API_URL}/vipapi/images/${about.section2.image}` : null
         });
 
         setAboutImages({ section1Image: null, section2Image: null });
@@ -2408,6 +2408,8 @@ const AdminDashboard = () => {
                                                 style={{ marginBottom: '15px' }}
                                             />
 
+                                            
+
                                             <div style={{ marginTop: '15px' }}>
                                                 <label style={{
                                                     display: 'block',
@@ -2622,7 +2624,7 @@ const AdminDashboard = () => {
                                                     {about.section1?.image && (
                                                         <div style={{ marginBottom: '15px' }}>
                                                             <img
-                                                                src={`${process.env.REACT_APP_API_URL}/${about.section1.image}`}
+                                                                src={`${process.env.REACT_APP_API_URL}/vipapi/images/${about.section1.image}`}
                                                                 alt="Section 1"
                                                                 style={{
                                                                     maxWidth: '100%',
@@ -2664,7 +2666,7 @@ const AdminDashboard = () => {
                                                     {about.section2?.image && (
                                                         <div style={{ marginBottom: '15px' }}>
                                                             <img
-                                                                src={`${process.env.REACT_APP_API_URL}/${about.section2.image}`}
+                                                                src={`${process.env.REACT_APP_API_URL}/vipapi/images/${about.section2.image}`}
                                                                 alt="Section 2"
                                                                 style={{
                                                                     maxWidth: '100%',

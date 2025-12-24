@@ -46,11 +46,21 @@ const About = () => {
   });
 
   const getImageUrl = (imagePath) => {
+    // Return default image if no path provided
     if (!imagePath) return '/images/about.jpg';
-    if (imagePath.startsWith('http') || imagePath.startsWith('/images')) {
+    
+    // Return as-is if it's already a full URL
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
       return imagePath;
     }
-    return `${API_URL.replace('/api', '')}/${imagePath}`;
+    
+    // Return as-is if it's a default static image
+    if (imagePath.startsWith('/images/')) {
+      return imagePath;
+    }
+    
+    // For GridFS filenames (stored in database), construct the GridFS endpoint URL
+    return `${API_URL}/vipapi/images/${imagePath}`;
   };
 
   if (loading) {
@@ -83,10 +93,11 @@ const About = () => {
                 onError={(e) => { e.target.src = '/images/about.jpg'; }}
               />
             </div>
-
           </div>
         </div>
+        
         <br /><br />
+        
         <div className="about-container">
           {/* Right Side — Gallery */}
           <div className="about-gallery">
@@ -97,18 +108,15 @@ const About = () => {
                 onError={(e) => { e.target.src = '/images/ab2.jpg'; }}
               />
             </div>
-
           </div>
+          
           {/* Left Side — Text */}
           <div className="about-text">
             <p>{data.section2.paragraph1}</p>
             <p>{data.section2.paragraph2}</p>
             <p>{data.section2.paragraph3}</p>
           </div>
-
-
         </div>
-
       </section>
 
       {error && (
@@ -122,7 +130,6 @@ const About = () => {
           {error}
         </div>
       )}
-
 
       <Gallery />
     </div>

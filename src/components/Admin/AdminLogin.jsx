@@ -44,58 +44,72 @@ const AdminLogin = () => {
 
     return (
         <div className="login-container">
-            <div className="login-card">
-                <div className="login-header">
-                    <h2>Admin Login</h2>
-                    <p>Sign in to access the admin panel</p>
+            <div className="login-wrapper">
+                <div className="login-card-left">
+                    <div className="login-header">
+                        <div className="admin-badge">VIP TOURS ADMIN</div>
+                        <h2>Enterprise Command Center for Tour Operations</h2>
+                        <p>Coordinate tour packages, manage user experiences, and safeguard financial operations — all from a zero-trust secured control hub.</p>
+                    </div>
                 </div>
 
-                {error && (
-                    <div className="error-message">
-                        {error}
+                <div className="login-card">
+                    <div className="login-header">
+                        <div className="access-badge">ADMIN ACCESS ONLY</div>
+                        <h2>Authenticate to continue</h2>
+                        <p>Your session is encrypted and monitored. Use assigned enterprise credentials to enter.</p>
                     </div>
-                )}
 
-                <form onSubmit={handleSubmit} className="login-form">
-                    <div className="form-group">
-                        <label htmlFor="email">Email Address</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="Enter your email"
-                            required
+                    {error && (
+                        <div className="error-message">
+                            {error}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="login-form">
+                        <div className="form-group">
+                            <label htmlFor="email">WORK EMAIL</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="you@viptours.com"
+                                required
+                                disabled={loading}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="password">PASSWORD</label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="Enter your password"
+                                required
+                                disabled={loading}
+                            />
+                        </div>
+
+                        
+
+                        <button 
+                            type="submit" 
+                            className="login-button"
                             disabled={loading}
-                        />
+                        >
+                            <span className="lock-icon">🔒</span>
+                            {loading ? 'Signing in...' : 'Secure Sign In'}
+                        </button>
+                    </form>
+
+                    <div className="login-footer">
+                        <p>Encrypted via TLS 1.3 • ISO 27001 compliant • Continuous anomaly detection</p>
                     </div>
-
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            placeholder="Enter your password"
-                            required
-                            disabled={loading}
-                        />
-                    </div>
-
-                    <button 
-                        type="submit" 
-                        className="login-button"
-                        disabled={loading}
-                    >
-                        {loading ? 'Logging in...' : 'Login'}
-                    </button>
-                </form>
-
-                <div className="login-footer">
-                    <p>Protected area - Authorized personnel only</p>
                 </div>
             </div>
         </div>

@@ -4,7 +4,6 @@ import './App.css';
 
 import Navbar from './components/Navbar/Navbar';
 import Home from './components/Home/Home';
-import Intro from './components/Intro/Intro';
 import Gallery from './components/Gallery/Gallery';
 import Why from './components/Why/Why';
 import Testimonials from './components/Testimonials/Testimonials';
@@ -18,6 +17,7 @@ import AdminDashboard from './components/Admin/AdminDashboard';
 import PackageDetail from './components/Packages/PackageDetail';
 import AdminLogin from './components/Admin/AdminLogin'
 import ProtectedRoute from './components/Admin/ProtectedRoute'
+import Destination from './components/Destination/Destination';
 
 // Layout wrapper component for routes with Header/Footer
 const PublicLayout = ({ children }) => (
@@ -43,18 +43,18 @@ function App() {
           }
         />
 
-        
+
         <Route
           path="/"
           element={
             <><PublicLayout>
               <Home />
-              <Intro />
               <Why />
+              <Destination />
               <Gallery />
               <Testimonials />
               <BookSection />
-              </PublicLayout>
+            </PublicLayout>
             </>
           }
         />
@@ -64,6 +64,9 @@ function App() {
         <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/:packageId" element={<PackageDetail />} />
+        <Route path="/destination" element={<Destination />} />
+        <Route path="/gallery" element={<Gallery/>} />
+
       </Routes>
     </Router>
   );

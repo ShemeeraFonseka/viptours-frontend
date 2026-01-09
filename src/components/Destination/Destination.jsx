@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import './Gallery.css';
+import './Destination.css';
 import axios from 'axios';
 
-const Gallery = () => {
+const Destination = () => {
   const [galleryItems, setGalleryItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -14,7 +14,7 @@ const Gallery = () => {
 
   const fetchGalleryItems = async () => {
     try {
-      const res = await axios.get(`${API_URL}/vipapi/gallery`);
+      const res = await axios.get(`${API_URL}/vipapi/destination`);
       setGalleryItems(res.data);
     } catch (err) {
       console.error("❌ Error fetching gallery items:", err);
@@ -26,7 +26,7 @@ const Gallery = () => {
   if (loading) {
     return (
       <section className="gallery-section">
-        <h2>Explore Our Gallery</h2>
+        <h2>Explore Our Destination</h2>
         <div style={{ textAlign: 'center', padding: '40px' }}>
           <p>Loading gallery...</p>
         </div>
@@ -36,7 +36,7 @@ const Gallery = () => {
 
   return (
     <section className="gallery-section">
-      <h2>Explore Our Gallery</h2>
+      <h2>Explore Our Destination</h2>
       <div className="gallery-masonry">
         {galleryItems.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px', width: '100%' }}>
@@ -52,6 +52,7 @@ const Gallery = () => {
                   e.target.src = '/images/placeholder.jpg'; // Fallback image
                 }}
               />
+              <p className="gallery-name">{item.name}</p>
             </div>
           ))
         )}
@@ -60,4 +61,4 @@ const Gallery = () => {
   );
 };
 
-export default Gallery;
+export default Destination;

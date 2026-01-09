@@ -148,7 +148,8 @@ border-radius: 16px;
 /* BOOKING SECTION */
 .booking-section {
     margin-top: 3rem;
-    background: #ffffff;
+    background: linear-gradient(to bottom right, #000000, #3f0101);
+   border: 2px solid #cf1212;
     padding: 2.5rem;
     border-radius: 12px;
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
@@ -175,19 +176,24 @@ border-radius: 16px;
 .form-group input {
     width: 50%;
     padding: 12px;
-    border: 1px solid #ddd;
+    background: transparent;
+   border: 2px solid #cf1212;
     border-radius: 8px;
     font-size: 20px;
+    color: #ffffff;
 }
 
 textarea {
     width: 100%;
     padding: 12px;
     border-radius: 10px;
-    border: 1px solid #ddd;
+    background: transparent;
+   border: 2px solid #cf1212;
     min-height: 120px;
     margin-bottom: 1rem;
     font-size: 20px;
+        color: #ffffff;
+
 }
 
 /* BUTTON */

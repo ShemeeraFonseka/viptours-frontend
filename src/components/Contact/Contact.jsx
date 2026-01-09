@@ -3,12 +3,12 @@ import axios from 'axios';
 import './Contact.css'
 
 const Contact = () => {
-
   const API_URL = process.env.REACT_APP_API_URL;
 
   const [contactInfo, setContactInfo] = useState({
     mobile: '',
-    email: ''
+    email: '',
+    image: ''
   });
   const [loading, setLoading] = useState(true);
 
@@ -25,38 +25,43 @@ const Contact = () => {
     };
 
     fetchContactInfo();
-  }, []);
+  }, [API_URL]);
 
   return (
     <section className="contactus-section">
       <h2>Contact Us</h2>
+      
+      {/* Display image from database or fallback to default */}
       <div className="contactus-image">
-          <img src="/images/image.jpg" alt="Contact" />
-        </div>
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <img 
+            src={contactInfo.image 
+              ? `${API_URL}/vipapi/images/${contactInfo.image}` 
+              : '/images/image.jpg'
+            } 
+            alt="Contact" 
+          />
+        )}
+      </div>
 
       <div className="contactus-container">
-
-        {/* Left: Contact Image */}
-        
-
         {/* Middle: Contact Details */}
         <div className="contactus-details">
-            <br />
+          <br />
           <h3>Get in Touch</h3>
-          <p>We’re here to help you plan the perfect trip!</p>
+          <p>We're here to help you plan the perfect trip!</p>
 
-         
           <div className="detail-item">
             <span>📞</span>
-            <p>{contactInfo.mobile || 'Loading...'}</p>
+            <p>{loading ? 'Loading...' : (contactInfo.mobile || 'Not available')}</p>
           </div>
 
           <div className="detail-item">
             <span>✉️</span>
-            <p>{contactInfo.email || 'Loading...'}</p>
+            <p>{loading ? 'Loading...' : (contactInfo.email || 'Not available')}</p>
           </div>
-
-          
         </div>
 
         {/* Right: Contact Form */}
@@ -69,10 +74,9 @@ const Contact = () => {
 
           <button type="submit" className="send-btn">Send Message</button>
         </form>
-
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Contact
+export default Contact;

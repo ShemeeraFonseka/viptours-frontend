@@ -22,8 +22,8 @@ const PackageDetail = () => {
     checkout: '',
     destination: '',
     price: '',
-    adults: 1,
-    children: 0,
+    adults: '',
+    children: '',
     request: ''
   });
 
@@ -139,7 +139,7 @@ const PackageDetail = () => {
       {/* Hero Section */}
       <div className="package-hero">
         <img
-          src={`${API_URL}/${packageData.image}`}
+          src={`${API_URL}${packageData.image}`}
           alt={packageData.title}
           className="hero-image"
         />
@@ -188,12 +188,12 @@ const PackageDetail = () => {
         )}
 
         <div className="pro-tip">
-          <h2>Rs. {packageData.price}.00</h2>
+          <h1>USD {packageData.price}</h1>
 
 
         </div>
 
-
+        <br /><br />
         {/* Pro Tip */}
         {packageData.proTip && (
           <div className="pro-tip">

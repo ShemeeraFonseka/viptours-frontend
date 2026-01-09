@@ -6,7 +6,7 @@
 .admin-layout {
   display: grid;
   min-height: 100vh;
-  background: #f8f9fa;
+  background: linear-gradient(to bottom right, #000000, #3f0101)
 }
 
 .sidebar {
@@ -116,7 +116,7 @@
   margin-left: 280px;
   flex: 1;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(to bottom right, #000000, #3f0101);
   transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -129,12 +129,13 @@
    DASHBOARD CARDS
    ============================================ */
 .dashboard-card {
-  background: white;
+  background: linear-gradient(to bottom right, #000000, #3f0101);
+  color: #ffff;
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e9ecef;
+  border: 1px solid #000000;
   transition: all 0.3s ease;
 }
 
@@ -151,7 +152,7 @@
 
 .card-title {
   margin: 0;
-  color: #1e293b;
+  color: #ffffff;
   font-size: 1.75rem;
   font-weight: 700;
   letter-spacing: -0.5px;
@@ -160,14 +161,14 @@
 .dashboard-card h3 {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #1e293b;
+  color: #ffffff;
   margin: 12px 0 8px 0;
   line-height: 1;
 }
 
 .dashboard-card h5 {
   font-size: 0.85rem;
-  color: #64748b;
+  color: #ffffff;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -177,7 +178,7 @@
 .dashboard-card h4 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #334155;
+  color: #ffffff;
   margin: 0;
 }
 
@@ -192,17 +193,16 @@
    FORMS
    ============================================ */
 .package-form {
-  background: #f8fafc;
+  background: transparent;
   padding: 24px;
   border-radius: 12px;
   margin-bottom: 24px;
-  border: 1px solid #e2e8f0;
 }
 
 .package-form h4,
 .package-form h5 {
   margin: 0 0 20px 0;
-  color: #1e293b;
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -212,20 +212,31 @@
   width: 100%;
   padding: 12px 16px;
   margin: 10px 0;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #575757;
   border-radius: 8px;
   font-size: 0.95rem;
   transition: all 0.3s ease;
   font-family: inherit;
-  background: white;
+  background: transparent;
   box-sizing: border-box;
+  color: #eeeeee;
+}
+
+.package-form select option {
+  background: #000000;
+  color: #ffffff;
+}
+
+.package-form select option:checked {
+  background: #575757;
+  color: #ffffff;
 }
 
 .package-form input:focus,
 .package-form textarea:focus,
 .package-form select:focus {
   outline: none;
-  border-color: #4fce5a;
+  border-color: #a8a8a8;
   box-shadow: 0 0 0 4px rgba(79, 206, 90, 0.1);
 }
 
@@ -262,11 +273,10 @@
 .users-table-section,
 .packages-table,
 .bookings-table {
-  background: white;
+  background: transparent;
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e9ecef;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -305,9 +315,9 @@
 .users-table th,
 .packages-table th,
 .bookings-table th {
-  background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+  background: transparent;
   font-weight: 700;
-  color: #475569;
+  color: #eeeeee;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -319,7 +329,7 @@
 .users-table td,
 .packages-table td,
 .bookings-table td {
-  color: #334155;
+  color: #eeeeee;
   font-size: 0.9rem;
   vertical-align: middle;
 }
@@ -333,7 +343,7 @@
 .users-table tbody tr:hover,
 .packages-table tbody tr:hover,
 .bookings-table tbody tr:hover {
-  background: #f8fafc;
+  background: transparent;
 }
 
 /* ============================================

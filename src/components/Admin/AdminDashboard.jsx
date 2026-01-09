@@ -59,22 +59,22 @@ const AdminDashboard = () => {
     // Contact Satate
     // Add these states at the top with other states
     const [contactInfo, setContactInfo] = useState([]);
+
+    const [contactEditingId, setContactEditingId] = useState(null);
+
+    // Update the contactFormData state to include image
     const [contactFormData, setContactFormData] = useState({
-        office: '',
         mobile: '',
         email: '',
-        mapUrl: ''
+        image: '' // Add this
     });
-    const [contactEditingId, setContactEditingId] = useState(null);
+
 
     //home content
     const [homeInfo, setHomeInfo] = useState([]);
     const [homeFormData, setHomeFormData] = useState({
         topic: '',
         line: '',
-        welcometopic: '',
-        welcomepara1: '',
-        welcomepara2: '',
         servicetopic1: '',
         servicepara1: '',
         servicetopic2: '',
@@ -117,33 +117,7 @@ const AdminDashboard = () => {
         setHomeFormData({ ...homeFormData, [e.target.name]: e.target.value });
     };
 
-    const handleContactSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            if (contactEditingId) {
-                await axios.put(`${process.env.REACT_APP_API_URL}/vipapi/contact-info/${contactEditingId}`, contactFormData);
-                alert('Contact info updated successfully');
-            } else {
-                await axios.post(`${process.env.REACT_APP_API_URL}/vipapi/contact-info`, contactFormData);
-                alert('Contact info created successfully');
-            }
 
-            setContactFormData({ mobile: '', email: '' });
-            setContactEditingId(null);
-            fetchContactInfo();
-        } catch (err) {
-            console.error(err);
-            alert('Error saving contact info');
-        }
-    };
-
-    const handleContactEdit = (contact) => {
-        setContactEditingId(contact._id);
-        setContactFormData({
-            mobile: contact.mobile,
-            email: contact.email,
-        });
-    };
 
     const handleHomeSubmit = async (e) => {
         e.preventDefault();
@@ -156,7 +130,7 @@ const AdminDashboard = () => {
                 alert('Home Content created successfully');
             }
 
-            setHomeFormData({ topic: '', line: '', welcometopic: '', welcomepara1: '', welcomepara2: '', servicetopic1: '', servicepara1: '', servicetopic2: '', servicepara2: '', servicetopic3: '', servicepara3: '', servicetopic4: '', servicepara4: '' });
+            setHomeFormData({ topic: '', line: '', servicetopic1: '', servicepara1: '', servicetopic2: '', servicepara2: '', servicetopic3: '', servicepara3: '', servicetopic4: '', servicepara4: '' });
             setHomeEditingId(null);
             fetchHomeInfo();
         } catch (err) {
@@ -175,9 +149,6 @@ const AdminDashboard = () => {
         setHomeFormData({
             topic: home.topic || '',
             line: home.line || '',
-            welcometopic: home.welcometopic || '',
-            welcomepara1: home.welcomepara1 || '',
-            welcomepara2: home.welcomepara2 || '',
             servicetopic1: home.servicetopic1 || '',
             servicepara1: home.servicepara1 || '',
             servicetopic2: home.servicetopic2 || '',
@@ -553,7 +524,7 @@ const AdminDashboard = () => {
     const handleGalleryEdit = (item) => {
         setGalleryEditingId(item._id);
         setGalleryFormData({ name: item.name });
-        setGalleryPreview(`${process.env.REACT_APP_API_URL}/${item.image}`);
+        setGalleryPreview(`${process.env.REACT_APP_API_URL}/vipapi/images/${item.image}`);
         setGalleryImage(null);
     };
 
@@ -566,6 +537,104 @@ const AdminDashboard = () => {
             } catch (err) {
                 console.error(err);
                 alert('Error deleting gallery item');
+            }
+        }
+    };
+
+
+    const [destinationItems, setDestinationItems] = useState([]);
+    const [destinationFormData, setDestinationFormData] = useState({
+        name: ''
+    });
+    const [destinationImage, setDestinationImage] = useState(null);
+    const [destinationPreview, setDestinationPreview] = useState(null);
+    const [destinationEditingId, setDestinationEditingId] = useState(null);
+
+    // Add to your useEffect
+    useEffect(() => {
+        // ... existing code
+        if (activeSection === 'destinations') {
+        fetchDestinationItems();
+    }
+    }, [activeSection]);
+
+    // Add these handler functions
+    const fetchDestinationItems = async () => {
+        try {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/vipapi/destination`);
+            setDestinationItems(res.data);
+        } catch (err) {
+            console.error('Error fetching gallery items:', err);
+        }
+    };
+
+    const handleDestinationInputChange = (e) => {
+        setDestinationFormData({ ...destinationFormData, [e.target.name]: e.target.value });
+    };
+
+    const handleDestinationImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setDestinationImage(file);
+            setDestinationPreview(URL.createObjectURL(file));
+        }
+    };
+
+    const handleDestinationSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const formData = new FormData();
+            formData.append('name', destinationFormData.name);
+            if (destinationImage) {
+                formData.append('image', destinationImage);
+            } else if (!destinationEditingId) {
+                alert('Please select an image');
+                return;
+            }
+
+            if (destinationEditingId) {
+                await axios.put(
+                    `${process.env.REACT_APP_API_URL}/vipapi/destination/${destinationEditingId}`,
+                    formData,
+                    { headers: { 'Content-Type': 'multipart/form-data' } }
+                );
+                alert('Destination item updated successfully');
+            } else {
+                await axios.post(
+                    `${process.env.REACT_APP_API_URL}/vipapi/destination`,
+                    formData,
+                    { headers: { 'Content-Type': 'multipart/form-data' } }
+                );
+                alert('Destination item created successfully');
+            }
+
+            setDestinationFormData({ name: '' });
+            setDestinationImage(null);
+            setDestinationPreview(null);
+            setDestinationEditingId(null);
+            fetchDestinationItems();
+        } catch (err) {
+            console.error(err);
+            alert(err.response?.data?.error || 'Error saving gallery item');
+        }
+    };
+
+    const handleDestinationEdit = (item) => {
+        setDestinationEditingId(item._id);
+        setDestinationFormData({ name: item.name });
+        setDestinationPreview(`${process.env.REACT_APP_API_URL}/vipapi/images/${item.image}`);
+        setDestinationImage(null);
+    };
+
+    const handleDestinationDelete = async (id) => {
+        if (window.confirm('Are you sure you want to delete this destination item?')) {
+            try {
+                await axios.delete(`${process.env.REACT_APP_API_URL}/vipapi/destination/${id}`);
+                alert('Destination item deleted successfully');
+                fetchDestinationItems();
+            } catch (err) {
+                console.error(err);
+                alert('Error deleting destination item');
             }
         }
     };
@@ -1100,7 +1169,156 @@ const AdminDashboard = () => {
         });
     };
 
+    // Add these state variables at the top of your component
+    const [carouselImages, setCarouselImages] = useState([]);
+    const [carouselPreviews, setCarouselPreviews] = useState([]);
 
+    // Handler for carousel image selection
+    const handleCarouselImageChange = (e) => {
+        const files = Array.from(e.target.files);
+
+        if (files.length === 0) {
+            setCarouselImages([]);
+            setCarouselPreviews([]);
+            return;
+        }
+
+        if (files.length > 10) {
+            alert('Maximum 10 images allowed');
+            return;
+        }
+
+        setCarouselImages(files);
+
+        // Generate previews
+        const previews = files.map(file => URL.createObjectURL(file));
+        setCarouselPreviews(previews);
+    };
+
+    // Handler for carousel upload (SEPARATE from home content submission)
+    const handleCarouselUpload = async (e) => {
+        e.preventDefault();
+
+        if (carouselImages.length === 0) {
+            alert('Please select at least one image');
+            return;
+        }
+
+        if (!homeInfo[0]?._id) {
+            alert('Please create Home Content first');
+            return;
+        }
+
+        const formData = new FormData();
+        carouselImages.forEach(image => {
+            formData.append('carouselImages', image);
+        });
+
+        try {
+            const res = await axios.post(
+                `${process.env.REACT_APP_API_URL}/vipapi/home/${homeInfo[0]._id}/carousel`,
+                formData,
+                {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                }
+            );
+
+            alert(res.data.message);
+            setCarouselImages([]);
+            setCarouselPreviews([]);
+
+            // Clear file input
+            const fileInput = document.querySelector('input[type="file"][multiple]');
+            if (fileInput) fileInput.value = '';
+
+            fetchHomeInfo(); // Refresh data
+        } catch (err) {
+            console.error('Error uploading carousel images:', err);
+            alert(err.response?.data?.error || 'Failed to upload images');
+        }
+    };
+
+    // Handler for deleting individual carousel image
+    const handleCarouselImageDelete = async (homeId, imageName) => {
+        if (!window.confirm('Are you sure you want to delete this carousel image?')) return;
+
+        try {
+            await axios.delete(`${process.env.REACT_APP_API_URL}/vipapi/home/${homeId}/carousel/${imageName}`);
+            alert('✅ Carousel image deleted successfully');
+            fetchHomeInfo(); // Refresh data
+        } catch (err) {
+            console.error('Error deleting carousel image:', err);
+            alert('Failed to delete image');
+        }
+    };
+
+    // Add these states with your other contact states (around line 40-50)
+    const [contactImage, setContactImage] = useState(null);
+    const [contactPreview, setContactPreview] = useState(null);
+
+
+    // Add this new handler for image upload
+    const handleContactImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setContactImage(file);
+            setContactPreview(URL.createObjectURL(file));
+        }
+    };
+
+    // Update handleContactSubmit function
+    const handleContactSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const formData = new FormData();
+            formData.append('mobile', contactFormData.mobile);
+            formData.append('email', contactFormData.email);
+
+            if (contactImage) {
+                formData.append('image', contactImage);
+            }
+
+            if (contactEditingId) {
+                await axios.put(
+                    `${process.env.REACT_APP_API_URL}/vipapi/contact-info/${contactEditingId}`,
+                    formData,
+                    { headers: { 'Content-Type': 'multipart/form-data' } }
+                );
+                alert('Contact info updated successfully');
+            } else {
+                await axios.post(
+                    `${process.env.REACT_APP_API_URL}/vipapi/contact-info`,
+                    formData,
+                    { headers: { 'Content-Type': 'multipart/form-data' } }
+                );
+                alert('Contact info created successfully');
+            }
+
+            setContactFormData({ mobile: '', email: '' });
+            setContactImage(null);
+            setContactPreview(null);
+            setContactEditingId(null);
+            fetchContactInfo();
+        } catch (err) {
+            console.error(err);
+            alert(err.response?.data?.error || 'Error saving contact info');
+        }
+    };
+
+    // Update handleContactEdit function
+    const handleContactEdit = (contact) => {
+        setContactEditingId(contact._id);
+        setContactFormData({
+            mobile: contact.mobile,
+            email: contact.email,
+        });
+
+        // Set image preview if exists
+        if (contact.image) {
+            setContactPreview(`${process.env.REACT_APP_API_URL}/vipapi/images/${contact.image}`);
+        }
+        setContactImage(null);
+    };
 
 
     useEffect(() => {
@@ -1202,6 +1420,7 @@ const AdminDashboard = () => {
                                                 <option value="editor">Editor</option>
                                                 <option value="admin">Admin</option>
                                             </select>
+
                                             <select
                                                 name="status"
                                                 value={userFormData.status}
@@ -1320,7 +1539,7 @@ const AdminDashboard = () => {
                         <div className="dashboard-card">
                             <div className="card-header">
                                 <h2 className="card-title">Booking Management</h2>
-                                <p style={{ color: '#64748b', fontSize: '0.9rem', margin: '5px 0 0 0' }}>
+                                <p style={{ color: '#d4d4d4ff', fontSize: '0.9rem', margin: '5px 0 0 0' }}>
                                     Manage customer bookings and reservations
                                 </p>
                             </div>
@@ -1625,8 +1844,8 @@ const AdminDashboard = () => {
                                             <div style={{
                                                 textAlign: 'center',
                                                 padding: '40px',
-                                                color: '#64748b',
-                                                background: '#f8fafc',
+                                                color: '#ffffffff',
+                                                background: 'transparent',
                                                 borderRadius: '10px'
                                             }}>
                                                 <i className="fas fa-calendar-times" style={{ fontSize: '3rem', marginBottom: '15px', opacity: 0.3 }}></i>
@@ -1736,19 +1955,18 @@ const AdminDashboard = () => {
 
                                     {/* Basic Information */}
                                     <div style={{
-                                        border: '2px solid #e2e8f0',
                                         borderRadius: '10px',
                                         padding: '20px',
                                         marginBottom: '25px',
-                                        background: '#f8fafc'
+                                        background: 'linear-gradient(to bottom right, #000000, #3f0101)',
                                     }}>
-                                        <h5 style={{ color: '#475569', marginBottom: '15px', fontSize: '1.1rem', fontWeight: '600' }}>
+                                        <h5 style={{ color: '#e4e4e4ff', marginBottom: '15px', fontSize: '1.1rem', fontWeight: '600' }}>
                                             📝 Basic Information
                                         </h5>
 
                                         <div className="row">
                                             <div className="col-md-6">
-                                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#475569' }}>
+                                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#e4e4e4ff' }}>
                                                     Package ID (for URL):
                                                 </label>
                                                 <input
@@ -1761,7 +1979,7 @@ const AdminDashboard = () => {
                                                 />
                                             </div>
                                             <div className="col-md-6">
-                                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#475569' }}>
+                                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#e4e4e4ff' }}>
                                                     Display Order:
                                                 </label>
                                                 <input
@@ -1775,7 +1993,7 @@ const AdminDashboard = () => {
                                             </div>
                                         </div>
 
-                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#475569' }}>
+                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#e4e4e4ff' }}>
                                             Package Title:
                                         </label>
                                         <input
@@ -1787,7 +2005,7 @@ const AdminDashboard = () => {
                                             style={{ marginBottom: '15px' }}
                                         />
 
-                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#475569' }}>
+                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#e4e4e4ff' }}>
                                             Package Price:
                                         </label>
                                         <input
@@ -1799,7 +2017,7 @@ const AdminDashboard = () => {
                                             style={{ marginBottom: '15px' }}
                                         />
 
-                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#475569' }}>
+                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#e4e4e4ff' }}>
                                             Short Description (for card):
                                         </label>
                                         <textarea
@@ -1813,7 +2031,7 @@ const AdminDashboard = () => {
                                         />
 
                                         <div style={{ marginBottom: '15px' }}>
-                                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#475569' }}>
+                                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#e4e4e4ff' }}>
                                                 Main Package Image:
                                             </label>
                                             <input
@@ -1840,7 +2058,7 @@ const AdminDashboard = () => {
                                                     onChange={handleVipPackageInputChange}
                                                     style={{ width: '20px', height: '20px' }}
                                                 />
-                                                <span style={{ fontSize: '1rem', color: '#475569' }}>
+                                                <span style={{ fontSize: '1rem', color: '#e4e4e4ff' }}>
                                                     Display on website (Active)
                                                 </span>
                                             </label>
@@ -1849,17 +2067,15 @@ const AdminDashboard = () => {
 
                                     {/* Detailed Content */}
                                     <div style={{
-                                        border: '2px solid #e2e8f0',
                                         borderRadius: '10px',
                                         padding: '20px',
-                                        marginBottom: '25px',
-                                        background: '#f8fafc'
+                                        background: 'transparent'
                                     }}>
-                                        <h5 style={{ color: '#475569', marginBottom: '15px', fontSize: '1.1rem', fontWeight: '600' }}>
+                                        <h5 style={{ color: '#e4e4e4ff', marginBottom: '15px', fontSize: '1.1rem', fontWeight: '600' }}>
                                             📖 Detailed Content (for detail page)
                                         </h5>
 
-                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#475569' }}>
+                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#e4e4e4ff' }}>
                                             Detailed Title:
                                         </label>
                                         <input
@@ -1870,7 +2086,7 @@ const AdminDashboard = () => {
                                             style={{ marginBottom: '15px' }}
                                         />
 
-                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#475569' }}>
+                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#e4e4e4ff' }}>
                                             Detailed Introduction:
                                         </label>
                                         <textarea
@@ -1885,14 +2101,13 @@ const AdminDashboard = () => {
 
                                     {/* Sections */}
                                     <div style={{
-                                        border: '2px solid #e2e8f0',
                                         borderRadius: '10px',
                                         padding: '20px',
                                         marginBottom: '25px',
-                                        background: '#f8fafc'
+                                        background: 'transparent'
                                     }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                                            <h5 style={{ color: '#475569', fontSize: '1.1rem', fontWeight: '600', margin: 0 }}>
+                                            <h5 style={{ color: '#e4e4e4ff', fontSize: '1.1rem', fontWeight: '600', margin: 0 }}>
                                                 📍 Tour Sections
                                             </h5>
                                             <button
@@ -1900,7 +2115,7 @@ const AdminDashboard = () => {
                                                 onClick={addSection}
                                                 style={{
                                                     padding: '8px 16px',
-                                                    background: '#4fce5a',
+                                                    background: '#d30505ff',
                                                     color: 'white',
                                                     border: 'none',
                                                     borderRadius: '5px',
@@ -1914,14 +2129,12 @@ const AdminDashboard = () => {
 
                                         {vipPackageSections.map((section, index) => (
                                             <div key={index} style={{
-                                                background: 'white',
                                                 padding: '20px',
                                                 borderRadius: '8px',
                                                 marginBottom: '15px',
-                                                border: '1px solid #e2e8f0'
                                             }}>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                                                    <h6 style={{ margin: 0, color: '#1e293b' }}>Section {index + 1}</h6>
+                                                    <h6 style={{ margin: 0, color: '#e4e4e4ff' }}>Section {index + 1}</h6>
                                                     {vipPackageSections.length > 1 && (
                                                         <button
                                                             type="button"
@@ -1941,7 +2154,7 @@ const AdminDashboard = () => {
                                                     )}
                                                 </div>
 
-                                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#475569' }}>
+                                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#e4e4e4ff' }}>
                                                     Section Title:
                                                 </label>
                                                 <input
@@ -1951,7 +2164,7 @@ const AdminDashboard = () => {
                                                     style={{ marginBottom: '15px', width: '100%' }}
                                                 />
 
-                                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#475569' }}>
+                                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#e4e4e4ff' }}>
                                                     Section Content:
                                                 </label>
                                                 <textarea
@@ -1962,25 +2175,24 @@ const AdminDashboard = () => {
                                                     style={{ marginBottom: '15px', width: '100%' }}
                                                 />
 
-                                               
-                                                
+
+
                                             </div>
                                         ))}
                                     </div>
 
                                     {/* Pro Tip */}
                                     <div style={{
-                                        border: '2px solid #e2e8f0',
                                         borderRadius: '10px',
                                         padding: '20px',
                                         marginBottom: '25px',
-                                        background: '#f8fafc'
+                                        background: 'transparent'
                                     }}>
-                                        <h5 style={{ color: '#475569', marginBottom: '15px', fontSize: '1.1rem', fontWeight: '600' }}>
+                                        <h5 style={{ color: '#e4e4e4ff', fontSize: '1.1rem', fontWeight: '600' }}>
                                             💡 Pro Tip
                                         </h5>
 
-                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#475569' }}>
+                                        <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600', color: '#e4e4e4ff' }}>
                                             Pro Tip for Travelers:
                                         </label>
                                         <textarea
@@ -2004,7 +2216,7 @@ const AdminDashboard = () => {
                                                     setVipPackageEditingId(null);
                                                     setVipPackageFormData({ packageId: '', title: '', description: '', isActive: true, displayOrder: 0 });
                                                     setVipPackageDetailedData({ detailedTitle: '', detailedIntro: '', proTip: '' });
-                                                    setVipPackageSections([{ sectionTitle: '', sectionContent: ''}]);
+                                                    setVipPackageSections([{ sectionTitle: '', sectionContent: '' }]);
                                                     setSectionPreviews([]);
                                                     setVipPackageImage(null);
                                                     setVipPackagePreview(null);
@@ -2020,7 +2232,7 @@ const AdminDashboard = () => {
 
                             {/* VIP Packages List - Display the correct packages */}
                             <div style={{ marginTop: '40px' }}>
-                                <h4 style={{ marginBottom: '20px', color: '#1e293b' }}>
+                                <h4 style={{ marginBottom: '20px', color: '#ffffffff' }}>
                                     All Packages ({vipPackages.length})
                                 </h4>
 
@@ -2028,8 +2240,8 @@ const AdminDashboard = () => {
                                     <div style={{
                                         textAlign: 'center',
                                         padding: '40px',
-                                        color: '#64748b',
-                                        background: '#f8fafc',
+                                        color: '#e4e4e4ff',
+                                        background: 'transparent',
                                         borderRadius: '10px'
                                     }}>
                                         <i className="fas fa-suitcase" style={{ fontSize: '3rem', marginBottom: '15px', opacity: 0.3 }}></i>
@@ -2067,7 +2279,7 @@ const AdminDashboard = () => {
                                                         </td>
                                                         <td>
                                                             <code style={{
-                                                                background: '#f1f5f9',
+                                                                background: 'transparent',
                                                                 padding: '4px 8px',
                                                                 borderRadius: '4px',
                                                                 fontSize: '0.9rem'
@@ -2143,7 +2355,7 @@ const AdminDashboard = () => {
                                 <h2 className="card-title">Home Page Content Management</h2>
                             </div>
 
-                            <div style={{ marginTop: '40px', borderTop: '2px solid #eee', paddingTop: '20px' }}>
+                            <div style={{ marginTop: '40px', paddingTop: '20px' }}>
                                 <h4>Home Page Content</h4>
                                 <br /><br />
                                 <div className="package-form" style={{ marginBottom: '20px' }}>
@@ -2156,7 +2368,7 @@ const AdminDashboard = () => {
                                             {homeEditingId ? 'Edit Home Information' : 'Add Home Information'}
                                         </h5>
 
-                                        
+
                                     </div>
                                     <form onSubmit={handleHomeSubmit}>
 
@@ -2174,27 +2386,7 @@ const AdminDashboard = () => {
                                             onChange={handleHomeInputChange}
                                             required
                                         />
-                                        <input
-                                            name="welcometopic"
-                                            placeholder="Welcome Topic"
-                                            value={homeFormData.welcometopic}
-                                            onChange={handleHomeInputChange}
-                                            required
-                                        />
-                                        <input
-                                            name="welcomepara1"
-                                            placeholder="Paragraph 1"
-                                            value={homeFormData.welcomepara1}
-                                            onChange={handleHomeInputChange}
-                                            required
-                                        />
-                                        <input
-                                            name="welcomepara2"
-                                            placeholder="Paragraph 1"
-                                            value={homeFormData.welcomepara2}
-                                            onChange={handleHomeInputChange}
-                                            required
-                                        />
+                                        
                                         <input
                                             name="servicetopic1"
                                             placeholder="Service Topic 1"
@@ -2258,13 +2450,13 @@ const AdminDashboard = () => {
                                         {homeEditingId && (
                                             <button type="button" onClick={() => {
                                                 setHomeEditingId(null);
-                                                setHomeFormData({ topic: '', line: '', welcometopic: '', welcomepara1: '', welcomepara2: '', servicetopic1: '', servicepara1: '', servicetopic2: '', servicepara2: '', servicetopic3: '', servicepara3: '', servicetopic4: '', servicepara4: '' });
+                                                setHomeFormData({ topic: '', line: '',  servicetopic1: '', servicepara1: '', servicetopic2: '', servicepara2: '', servicetopic3: '', servicepara3: '', servicetopic4: '', servicepara4: '' });
                                             }}>Cancel</button>
                                         )}
 
                                         {homeInfo.length > 0 && !homeEditingId && (
                                             <button
-                                                
+
                                                 className='btn-action edit'
                                                 onClick={() => handleHomeEdit(homeInfo[0])}
                                             >
@@ -2274,22 +2466,171 @@ const AdminDashboard = () => {
                                     </form>
                                 </div>
 
-                                
+
+                            </div>
+                        </div>
+
+                        <div className="dashboard-card">
+                            <div className="card-header">
+                                <h2 className="card-title">Carousel Images Management</h2>
+                                <p style={{ color: '#cececeff', fontSize: '0.9rem', margin: '5px 0 0 0' }}>
+                                    Upload images for the home page carousel (Max 10 images)
+                                </p>
+                            </div>
+
+                            <div style={{ marginTop: '30px' }}>
+                                {/* Show upload form only if home content exists */}
+                                {homeInfo.length > 0 ? (
+                                    <>
+                                        <div className="package-form" style={{ marginBottom: '30px' }}>
+                                            <h4 style={{ marginBottom: '20px', color: '#f1f1f1ff' }}>
+                                                Upload Carousel Images
+                                            </h4>
+
+                                            <form onSubmit={handleCarouselUpload}>
+                                                <div style={{ marginBottom: '20px' }}>
+                                                    <label style={{
+                                                        display: 'block',
+                                                        marginBottom: '8px',
+                                                        fontWeight: '600',
+                                                        color: '#cececeff'
+                                                    }}>
+                                                        Select Images (You can select multiple):
+                                                    </label>
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        multiple
+                                                        onChange={handleCarouselImageChange}
+                                                        required
+                                                        style={{ marginBottom: '10px' }}
+                                                    />
+                                                    <p style={{ fontSize: '0.85rem', color: '#cececeff', marginTop: '5px' }}>
+                                                        Supported formats: JPG, PNG, GIF, WebP (Max 5MB each)
+                                                    </p>
+                                                </div>
+
+                                                {/* Preview Section */}
+                                                {carouselPreviews.length > 0 && (
+                                                    <div style={{ marginBottom: '20px' }}>
+                                                        <h5 style={{ marginBottom: '10px', color: '#cececeff' }}>
+                                                            Preview ({carouselPreviews.length} images):
+                                                        </h5>
+                                                        <div style={{
+                                                            display: 'grid',
+                                                            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+                                                            gap: '10px'
+                                                        }}>
+                                                            {carouselPreviews.map((preview, index) => (
+                                                                <img
+                                                                    key={index}
+                                                                    src={preview}
+                                                                    alt={`Preview ${index + 1}`}
+                                                                    style={{
+                                                                        width: '100%',
+                                                                        height: '120px',
+                                                                        objectFit: 'cover',
+                                                                        borderRadius: '8px',
+                                                                        border: '2px solid #e2e8f0'
+                                                                    }}
+                                                                />
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                <button
+                                                    type="submit"
+                                                    disabled={carouselImages.length === 0}
+                                                    style={{
+                                                        padding: '12px 24px',
+                                                        background: carouselImages.length === 0
+                                                            ? '#94a3b8'
+                                                            : 'linear-gradient(135deg, #c51616 0%, #bd0505 100%)',
+                                                        color: 'white',
+                                                        border: 'none',
+                                                        borderRadius: '8px',
+                                                        cursor: carouselImages.length === 0 ? 'not-allowed' : 'pointer',
+                                                        fontWeight: '600',
+                                                        fontSize: '1rem'
+                                                    }}
+                                                >
+                                                    ✓ Upload Carousel Images
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                        {/* Current Carousel Images Display */}
+                                        {homeInfo[0]?.carouselImages && homeInfo[0].carouselImages.length > 0 && (
+                                            <div className="packages-table">
+                                                <h4 style={{ marginBottom: '20px', color: '#cececeff' }}>
+                                                    Current Carousel Images ({homeInfo[0].carouselImages.length})
+                                                </h4>
+
+                                                <div style={{
+                                                    display: 'grid',
+                                                    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                                                    gap: '15px'
+                                                }}>
+                                                    {homeInfo[0].carouselImages.map((image, index) => (
+                                                        <div key={index} style={{
+                                                            border: '1px solid #e2e8f0',
+                                                            borderRadius: '10px',
+                                                            overflow: 'hidden',
+                                                            background: '#fff'
+                                                        }}>
+                                                            <img
+                                                                src={`${process.env.REACT_APP_API_URL}/vipapi/images/${image}`} // Using GridFS route
+                                                                alt={`Carousel ${index + 1}`}
+                                                                style={{
+                                                                    width: '100%',
+                                                                    height: '150px',
+                                                                    objectFit: 'cover'
+                                                                }}
+                                                            />
+                                                            <div style={{ padding: '10px', textAlign: 'center' }}>
+                                                                <button
+                                                                    className='btn-action delete'
+                                                                    onClick={() => handleCarouselImageDelete(homeInfo[0]._id, image)}
+                                                                    style={{ width: '100%' }}
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div style={{
+                                        textAlign: 'center',
+                                        padding: '40px',
+                                        color: '#64748b',
+                                        background: '#f8fafc',
+                                        borderRadius: '10px'
+                                    }}>
+                                        <p>⚠️ Please create Home Content first before uploading carousel images</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
                         <div className="dashboard-card">
                             <div className="card-header">
                                 <h2 className="card-title">Contact Information Management</h2>
+                                <p style={{ color: '#cececeff', fontSize: '0.9rem', margin: '5px 0 0 0' }}>
+                                    Manage your contact details and contact page image
+                                </p>
                             </div>
 
-                            <div style={{ marginTop: '40px', borderTop: '2px solid #eee', paddingTop: '20px' }}>
+                            <div style={{ marginTop: '40px',  paddingTop: '20px' }}>
                                 <h4>Contact Details</h4>
                                 <br /><br />
                                 <div className="package-form" style={{ marginBottom: '20px' }}>
                                     <h5>{contactEditingId ? 'Edit Contact Information' : 'Add New Contact Information'}</h5>
                                     <form onSubmit={handleContactSubmit}>
-
                                         <input
                                             name="mobile"
                                             placeholder="Mobile Number"
@@ -2306,13 +2647,47 @@ const AdminDashboard = () => {
                                             required
                                         />
 
-                                        <button type="submit">
+                                        {/* Image Upload Section */}
+                                        <div style={{ marginTop: '15px' }}>
+                                            <label style={{
+                                                display: 'block',
+                                                marginBottom: '8px',
+                                                fontWeight: '600',
+                                                color: '#cececeff'
+                                            }}>
+                                                Contact Page Image:
+                                            </label>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleContactImageChange}
+                                                style={{ marginBottom: '10px' }}
+                                            />
+                                            {contactPreview && (
+                                                <div style={{ marginTop: '10px' }}>
+                                                    <img
+                                                        src={contactPreview}
+                                                        alt="Contact Preview"
+                                                        style={{
+                                                            maxWidth: '300px',
+                                                            height: 'auto',
+                                                            borderRadius: '8px',
+                                                            border: '2px solid #e2e8f0'
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <button type="submit" style={{ marginTop: '15px' }}>
                                             {contactEditingId ? 'Update Contact Info' : 'Create Contact Info'}
                                         </button>
                                         {contactEditingId && (
                                             <button type="button" onClick={() => {
                                                 setContactEditingId(null);
                                                 setContactFormData({ mobile: '', email: '' });
+                                                setContactImage(null);
+                                                setContactPreview(null);
                                             }}>Cancel</button>
                                         )}
                                     </form>
@@ -2322,22 +2697,37 @@ const AdminDashboard = () => {
                                     <table>
                                         <thead>
                                             <tr>
+                                                <th>Image</th>
                                                 <th>Mobile</th>
                                                 <th>Email</th>
-
-
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {contactInfo.map(contact => (
                                                 <tr key={contact._id}>
+                                                    <td>
+                                                        {contact.image ? (
+                                                            <img
+                                                                src={`${process.env.REACT_APP_API_URL}/vipapi/images/${contact.image}`}
+                                                                alt="Contact"
+                                                                style={{
+                                                                    width: '100px',
+                                                                    height: '70px',
+                                                                    objectFit: 'cover',
+                                                                    borderRadius: '8px'
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <span style={{ color: '#cececeff', fontSize: '0.9rem' }}>No image</span>
+                                                        )}
+                                                    </td>
                                                     <td>{contact.mobile}</td>
                                                     <td>{contact.email}</td>
-
-
                                                     <td>
-                                                        <button className='btn-action edit' onClick={() => handleContactEdit(contact)}>Edit</button>
+                                                        <button className='btn-action edit' onClick={() => handleContactEdit(contact)}>
+                                                            Edit
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -2347,32 +2737,30 @@ const AdminDashboard = () => {
                             </div>
                         </div>
 
-
                         <div className="dashboard-card">
                             <div className="card-header">
                                 <h2 className="card-title">About Page Content Management</h2>
-                                <p style={{ color: '#64748b', fontSize: '0.9rem', margin: '5px 0 0 0' }}>
+                                <p style={{ color: '#cececeff', fontSize: '0.9rem', margin: '5px 0 0 0' }}>
                                     Manage your About page sections, paragraphs, and images
                                 </p>
                             </div>
 
                             <div style={{ marginTop: '30px' }}>
                                 <div className="package-form" style={{ marginBottom: '30px' }}>
-                                    <h4 style={{ marginBottom: '20px', color: '#1e293b' }}>
+                                    <h4 style={{ marginBottom: '20px', color: '#f1f1f1ff' }}>
                                         {aboutEditingId ? 'Edit About Content' : 'Add About Content'}
                                     </h4>
 
                                     <form onSubmit={handleAboutSubmit}>
                                         {/* Section 1 */}
                                         <div style={{
-                                            border: '2px solid #e2e8f0',
                                             borderRadius: '10px',
                                             padding: '20px',
                                             marginBottom: '25px',
-                                            background: '#f8fafc'
+                                            background: 'transparent'
                                         }}>
                                             <h5 style={{
-                                                color: '#475569',
+                                                color: '#ffffffff',
                                                 marginBottom: '15px',
                                                 fontSize: '1.1rem',
                                                 fontWeight: '600'
@@ -2408,7 +2796,7 @@ const AdminDashboard = () => {
                                                 style={{ marginBottom: '15px' }}
                                             />
 
-                                            
+
 
                                             <div style={{ marginTop: '15px' }}>
                                                 <label style={{
@@ -2444,14 +2832,13 @@ const AdminDashboard = () => {
 
                                         {/* Section 2 */}
                                         <div style={{
-                                            border: '2px solid #e2e8f0',
                                             borderRadius: '10px',
                                             padding: '20px',
                                             marginBottom: '25px',
-                                            background: '#f8fafc'
+                                            background: 'transparent'
                                         }}>
                                             <h5 style={{
-                                                color: '#475569',
+                                                color: '#ffffffff',
                                                 marginBottom: '15px',
                                                 fontSize: '1.1rem',
                                                 fontWeight: '600'
@@ -2575,7 +2962,7 @@ const AdminDashboard = () => {
 
                                 {/* Current Content Display */}
                                 <div className="packages-table">
-                                    <h4 style={{ marginBottom: '20px', color: '#1e293b' }}>
+                                    <h4 style={{ marginBottom: '20px', color: '#ffffffff' }}>
                                         Current About Content
                                     </h4>
 
@@ -2584,7 +2971,7 @@ const AdminDashboard = () => {
                                             textAlign: 'center',
                                             padding: '40px',
                                             color: '#64748b',
-                                            background: '#f8fafc',
+                                            background: 'transparent',
                                             borderRadius: '10px'
                                         }}>
                                             <i className="fas fa-file-alt" style={{ fontSize: '3rem', marginBottom: '15px', opacity: 0.3 }}></i>
@@ -2594,7 +2981,6 @@ const AdminDashboard = () => {
                                     ) : (
                                         abouts.map(about => (
                                             <div key={about._id} style={{
-                                                border: '1px solid #e2e8f0',
                                                 borderRadius: '10px',
                                                 overflow: 'hidden',
                                                 marginBottom: '20px'
@@ -2602,16 +2988,16 @@ const AdminDashboard = () => {
                                                 {/* Section 1 Display */}
                                                 <div style={{
                                                     padding: '25px',
-                                                    background: '#ffffff',
+                                                    background: 'transparent',
                                                     borderBottom: '1px solid #e2e8f0'
                                                 }}>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                                                        <h5 style={{ color: '#1e293b', fontSize: '1.2rem', margin: 0 }}>
+                                                        <h5 style={{ color: '#ffffffff', fontSize: '1.2rem', margin: 0 }}>
                                                             {about.section1?.heading || 'Section 1'}
                                                         </h5>
                                                         <span style={{
                                                             background: '#e0e7ff',
-                                                            color: '#4338ca',
+                                                            color: '#e91c0dff',
                                                             padding: '4px 12px',
                                                             borderRadius: '20px',
                                                             fontSize: '0.85rem',
@@ -2636,7 +3022,7 @@ const AdminDashboard = () => {
                                                         </div>
                                                     )}
 
-                                                    <div style={{ color: '#475569', lineHeight: '1.6' }}>
+                                                    <div style={{ color: '#ffffffff', lineHeight: '1.6' }}>
                                                         <p style={{ marginBottom: '12px' }}>{about.section1?.paragraph1}</p>
                                                         <p>{about.section1?.paragraph2}</p>
                                                     </div>
@@ -2645,15 +3031,15 @@ const AdminDashboard = () => {
                                                 {/* Section 2 Display */}
                                                 <div style={{
                                                     padding: '25px',
-                                                    background: '#f8fafc'
+                                                    background: 'transparent'
                                                 }}>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                                                        <h5 style={{ color: '#1e293b', fontSize: '1.2rem', margin: 0 }}>
+                                                        <h5 style={{ color: '#ffffffff', fontSize: '1.2rem', margin: 0 }}>
                                                             Section 2
                                                         </h5>
                                                         <span style={{
                                                             background: '#dbeafe',
-                                                            color: '#1e40af',
+                                                            color: '#e21a1aff',
                                                             padding: '4px 12px',
                                                             borderRadius: '20px',
                                                             fontSize: '0.85rem',
@@ -2678,7 +3064,7 @@ const AdminDashboard = () => {
                                                         </div>
                                                     )}
 
-                                                    <div style={{ color: '#475569', lineHeight: '1.6' }}>
+                                                    <div style={{ color: '#ffffffff', lineHeight: '1.6' }}>
                                                         <p style={{ marginBottom: '12px' }}>{about.section2?.paragraph1}</p>
                                                         <p style={{ marginBottom: '12px' }}>{about.section2?.paragraph2}</p>
                                                         <p>{about.section2?.paragraph3}</p>
@@ -2688,7 +3074,7 @@ const AdminDashboard = () => {
                                                 {/* Action Buttons */}
                                                 <div style={{
                                                     padding: '20px',
-                                                    background: '#ffffff',
+                                                    background: 'transparent',
                                                     borderTop: '1px solid #e2e8f0',
                                                     display: 'flex',
                                                     gap: '10px',
@@ -2720,14 +3106,163 @@ const AdminDashboard = () => {
 
                 );
 
-            case 'gallery':
+            case 'destinations':
+                return (
+                    <div className="content-wrapper">
+                        <div className="dashboard-card">
+                            <div className="card-header">
+                                <h2 className="card-title">Destinations Management</h2>
+                                <p style={{ color: '#e4e4e4ff', fontSize: '0.9rem', margin: '5px 0 0 0' }}>
+                                    Manage your destination gallery images
+                                </p>
+                            </div>
+
+                            {/* Gallery Form */}
+                            <div className="package-form" style={{ marginTop: '20px' }}>
+                                <h4>{destinationEditingId ? 'Edit Gallery Item' : 'Add New Gallery Item'}</h4>
+                                <form onSubmit={handleDestinationSubmit} encType="multipart/form-data">
+                                    <input
+                                        name="name"
+                                        placeholder="Destination Name (e.g., Nuwara Eliya)"
+                                        value={destinationFormData.name}
+                                        onChange={handleDestinationInputChange}
+                                        required
+                                    />
+
+                                    <div style={{ marginTop: '15px' }}>
+                                        <label style={{
+                                            display: 'block',
+                                            marginBottom: '8px',
+                                            fontWeight: '600',
+                                            color: '#e4e4e4ff'
+                                        }}>
+                                            Destination Image:
+                                        </label>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleDestinationImageChange}
+                                            style={{ marginBottom: '10px' }}
+                                        />
+                                        {destinationPreview && (
+                                            <div style={{ marginTop: '10px' }}>
+                                                <img
+                                                    src={destinationPreview}
+                                                    alt="Preview"
+                                                    style={{
+                                                        maxWidth: '300px',
+                                                        height: 'auto',
+                                                        borderRadius: '8px',
+                                                        border: '2px solid #e2e8f0'
+                                                    }}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                                        <button type="submit">
+                                            {destinationEditingId ? 'Update Destination' : 'Create Destination'}
+                                        </button>
+                                        {destinationEditingId && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setDestinationEditingId(null);
+                                                    setDestinationFormData({ name: '' });
+                                                    setDestinationImage(null);
+                                                    setDestinationPreview(null);
+                                                }}
+                                            >
+                                                Cancel
+                                            </button>
+                                        )}
+                                    </div>
+                                </form>
+                            </div>
+
+                            {/* Gallery Items Grid Display */}
+                            <div style={{ marginTop: '40px' }}>
+                                <h4 style={{ marginBottom: '20px', color: '#e4e4e4ff' }}>
+                                    Gallery Items ({destinationItems.length})
+                                </h4>
+
+                                {destinationItems.length === 0 ? (
+                                    <div style={{
+                                        textAlign: 'center',
+                                        padding: '40px',
+                                        color: '#ebebebff',
+                                        background: 'transparent',
+                                        borderRadius: '10px'
+                                    }}>
+                                        <i className="fas fa-images" style={{ fontSize: '3rem', marginBottom: '15px', opacity: 0.3 }}></i>
+                                        <p style={{ fontSize: '1.1rem' }}>No gallery items available</p>
+                                        <p style={{ fontSize: '0.9rem', marginTop: '5px' }}>Add your first destination image above</p>
+                                    </div>
+                                ) : (
+                                    <div className="row">
+                                        {destinationItems.map((item) => (
+                                            <div className="col-md-4" key={item._id} style={{ marginBottom: '20px' }}>
+                                                <div style={{
+                                                    border: '1px solid #e2e8f0',
+                                                    borderRadius: '10px',
+                                                    overflow: 'hidden',
+                                                    transition: 'all 0.3s ease',
+                                                    height: '100%'
+                                                }}>
+                                                    <div style={{ position: 'relative', paddingTop: '75%', overflow: 'hidden' }}>
+                                                        <img
+                                                            src={`${process.env.REACT_APP_API_URL}/vipapi/images/${item.image}`}
+                                                            alt={item.name}
+                                                            style={{
+                                                                position: 'absolute',
+                                                                top: 0,
+                                                                left: 0,
+                                                                width: '100%',
+                                                                height: '100%',
+                                                                objectFit: 'cover'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div style={{ padding: '15px' }}>
+                                                        <h5 style={{ margin: '0 0 15px 0', color: '#ffffffff' }}>
+                                                            {item.name}
+                                                        </h5>
+                                                        <div style={{ display: 'flex', gap: '10px' }}>
+                                                            <button
+                                                                className='btn-action edit'
+                                                                onClick={() => handleDestinationEdit(item)}
+                                                                style={{ flex: 1 }}
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                            <button
+                                                                className='btn-action delete'
+                                                                onClick={() => handleDestinationDelete(item._id)}
+                                                                style={{ flex: 1 }}
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                );
+
+                case 'gallery':
                 return (
                     <div className="content-wrapper">
                         <div className="dashboard-card">
                             <div className="card-header">
                                 <h2 className="card-title">Gallery Management</h2>
-                                <p style={{ color: '#64748b', fontSize: '0.9rem', margin: '5px 0 0 0' }}>
-                                    Manage your destination gallery images
+                                <p style={{ color: '#e4e4e4ff', fontSize: '0.9rem', margin: '5px 0 0 0' }}>
+                                    Manage your gallery images
                                 </p>
                             </div>
 
@@ -2748,7 +3283,7 @@ const AdminDashboard = () => {
                                             display: 'block',
                                             marginBottom: '8px',
                                             fontWeight: '600',
-                                            color: '#475569'
+                                            color: '#e4e4e4ff'
                                         }}>
                                             Gallery Image:
                                         </label>
@@ -2797,7 +3332,7 @@ const AdminDashboard = () => {
 
                             {/* Gallery Items Grid Display */}
                             <div style={{ marginTop: '40px' }}>
-                                <h4 style={{ marginBottom: '20px', color: '#1e293b' }}>
+                                <h4 style={{ marginBottom: '20px', color: '#e4e4e4ff' }}>
                                     Gallery Items ({galleryItems.length})
                                 </h4>
 
@@ -2805,8 +3340,8 @@ const AdminDashboard = () => {
                                     <div style={{
                                         textAlign: 'center',
                                         padding: '40px',
-                                        color: '#64748b',
-                                        background: '#f8fafc',
+                                        color: '#ebebebff',
+                                        background: 'transparent',
                                         borderRadius: '10px'
                                     }}>
                                         <i className="fas fa-images" style={{ fontSize: '3rem', marginBottom: '15px', opacity: 0.3 }}></i>
@@ -2826,7 +3361,7 @@ const AdminDashboard = () => {
                                                 }}>
                                                     <div style={{ position: 'relative', paddingTop: '75%', overflow: 'hidden' }}>
                                                         <img
-                                                            src={`${process.env.REACT_APP_API_URL}/${item.image}`}
+                                                            src={`${process.env.REACT_APP_API_URL}/vipapi/images/${item.image}`}
                                                             alt={item.name}
                                                             style={{
                                                                 position: 'absolute',
@@ -2839,7 +3374,7 @@ const AdminDashboard = () => {
                                                         />
                                                     </div>
                                                     <div style={{ padding: '15px' }}>
-                                                        <h5 style={{ margin: '0 0 15px 0', color: '#1e293b' }}>
+                                                        <h5 style={{ margin: '0 0 15px 0', color: '#ffffffff' }}>
                                                             {item.name}
                                                         </h5>
                                                         <div style={{ display: 'flex', gap: '10px' }}>
@@ -2875,7 +3410,7 @@ const AdminDashboard = () => {
                         <div className="dashboard-card">
                             <div className="card-header">
                                 <h2 className="card-title">Testimonials Management</h2>
-                                <p style={{ color: '#64748b', fontSize: '0.9rem', margin: '5px 0 0 0' }}>
+                                <p style={{ color: '#e4e4e4ff', fontSize: '0.9rem', margin: '5px 0 0 0' }}>
                                     Manage customer testimonials and reviews
                                 </p>
                             </div>
@@ -2949,7 +3484,7 @@ const AdminDashboard = () => {
                                                 onChange={handleTestimonialInputChange}
                                                 style={{ width: '20px', height: '20px' }}
                                             />
-                                            <span style={{ fontSize: '1rem', color: '#475569' }}>
+                                            <span style={{ fontSize: '1rem', color: '#ebebebff' }}>
                                                 Display on website (Active)
                                             </span>
                                         </label>
@@ -2976,7 +3511,7 @@ const AdminDashboard = () => {
 
                             {/* Testimonials List */}
                             <div style={{ marginTop: '40px' }}>
-                                <h4 style={{ marginBottom: '20px', color: '#1e293b' }}>
+                                <h4 style={{ marginBottom: '20px', color: '#fafafaff' }}>
                                     All Testimonials ({testimonials.length})
                                 </h4>
 
@@ -2984,8 +3519,8 @@ const AdminDashboard = () => {
                                     <div style={{
                                         textAlign: 'center',
                                         padding: '40px',
-                                        color: '#64748b',
-                                        background: '#f8fafc',
+                                        color: '#f8f8f8ff',
+                                        background: 'transparent',
                                         borderRadius: '10px'
                                     }}>
                                         <i className="fas fa-comment-dots" style={{ fontSize: '3rem', marginBottom: '15px', opacity: 0.3 }}></i>
@@ -3069,40 +3604,41 @@ const AdminDashboard = () => {
                             {/* Preview Section */}
                             {testimonials.filter(t => t.isActive).length > 0 && (
                                 <div style={{ marginTop: '40px', borderTop: '2px solid #e2e8f0', paddingTop: '30px' }}>
-                                    <h4 style={{ marginBottom: '20px', color: '#1e293b' }}>
+                                    <h4 style={{ marginBottom: '20px', color: '#ffffffff' }}>
                                         Website Preview (Active Testimonials)
                                     </h4>
                                     <div style={{
                                         display: 'grid',
                                         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
                                         gap: '20px',
-                                        background: '#f8fafc',
+                                        background: 'transparent',
                                         padding: '30px',
                                         borderRadius: '10px'
                                     }}>
                                         {testimonials.filter(t => t.isActive).map((testimonial) => (
                                             <div key={testimonial._id} style={{
-                                                background: 'white',
+                                                background: 'transparent',
                                                 padding: '25px',
                                                 borderRadius: '10px',
                                                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                                                position: 'relative'
+                                                position: 'relative',
+                                                border: '1px solid #e2e8f0'
                                             }}>
-                                                <FaQuoteLeft style={{ color: '#4fce5a', fontSize: '2rem', marginBottom: '15px' }} />
+                                                <FaQuoteLeft style={{ color: '#c50202ff', fontSize: '2rem', marginBottom: '15px' }} />
                                                 <p style={{
                                                     fontSize: '0.95rem',
                                                     lineHeight: '1.6',
-                                                    color: '#475569',
+                                                    color: '#ffffffff',
                                                     marginBottom: '20px',
                                                     fontStyle: 'italic'
                                                 }}>
                                                     "{testimonial.quote}"
                                                 </p>
                                                 <div>
-                                                    <h4 style={{ margin: '0 0 5px 0', fontSize: '1rem', color: '#1e293b' }}>
+                                                    <h4 style={{ margin: '0 0 5px 0', fontSize: '1rem', color: '#fcfcfcff' }}>
                                                         {testimonial.name}
                                                     </h4>
-                                                    <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748b' }}>
+                                                    <p style={{ margin: 0, fontSize: '0.85rem', color: '#e9e9e9ff' }}>
                                                         {testimonial.role}
                                                     </p>
                                                 </div>
@@ -3565,6 +4101,20 @@ const AdminDashboard = () => {
                     </li>
 
 
+
+                    <li>
+
+                        <a href="#"
+                            className={activeSection === 'destinations' ? 'active' : ''}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleSectionChange('destinations');
+                            }}
+                        >
+                            <i className="fas fa-images"></i>
+                            <span>Destinations</span>
+                        </a>
+                    </li>
 
                     <li>
 
